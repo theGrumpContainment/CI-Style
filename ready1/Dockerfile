@@ -13,7 +13,7 @@ run \
     eslint-plugin-html \
     babel-eslint \
     eslint-config-standard \
-    eslint-plugin-prettier@4.0.0 \
+    eslint-plugin-prettier \
     eslint-plugin-import@latest \
     eslint-plugin-node@latest \
     eslint-plugin-promise@latest \
