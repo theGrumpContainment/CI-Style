@@ -9,6 +9,7 @@ run \
   apt update && apt install -y build-essential cmake && \
   wget -O- -q "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.xz" | tar xfJ - -C /usr/local --strip-components=1 && \
   npm install -g \
+    cypress --unsafe-perm --silent \
     eslint@7.32.0 \
     eslint-plugin-html \
     babel-eslint \
