@@ -14,6 +14,7 @@ run \
     babel-eslint \
     eslint-config-standard \
     eslint-plugin-prettier \
+    eslint-plugin-diff \
     eslint-plugin-import@latest \
     eslint-plugin-node@latest \
     eslint-plugin-promise@latest \
