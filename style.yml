@@ -1,0 +1,42 @@
+name: CI-style
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - prod/hotfix/*
+      - production*
+      - staging*
+  pull_request:
+    branches:
+      - master
+    types: [ opened, synchronize, ready_for_review ]
+
+jobs:
+  style:
+    timeout-minutes: 5
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.draft == false || github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: "git fetch"
+        run: |
+          git fetch --no-tags --prune origin +refs/heads/*:refs/remotes/origin/*
+      - uses: actions/cache@v2
+        id: cache
+        with:
+          key: ci-style-v4-${{ runner.OS }}-${{ hashFiles('package-lock.json') }}
+          path: |
+            ~/.npm-docker
+      - run: docker pull themarketci/themarketci:latest
+      - name: themarketCI 
+        run: >
+          docker run --rm -v ~/.npm-docker:/root/.npm -v $(pwd):/app -w /app themarketci/themarketci:latest
+      - name: dependencies
+        run: |
+          npm ci
+      - env:
+          PRONTO_PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
+          PRONTO_GITHUB_ACCESS_TOKEN: "${{ secrets.PRONTO_GITHUB_ACCESS_TOKEN }}"
+        run: docker run -e PRONTO_PULL_REQUEST_ID -e PRONTO_GITHUB_ACCESS_TOKEN --rm -v ~/.npm-docker:/root/.npm -v $(pwd):/app -w /app themarketci/themarketci:latest pronto run --exit-code -f github_pr -c origin/${{ github.base_ref }}
